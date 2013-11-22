@@ -50,8 +50,9 @@ You can download binaries from http://www.espruino.com/Download (these aren't th
 
 Please note that this is BETA. We've been working hard on the Espruino Board support but we haven't had time to check the other boards properly.
 
-* Espruino Board - working
+* Espruino Board - WORKING
 * Linux - working
+* STM32F0DISCOVERY - WIP
 * STM32VLDISCOVERY - WORKING
 * STM32F3DISCOVERY - WORKING
 * STM32F4DISCOVERY - WORKING
