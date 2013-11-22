@@ -71,6 +71,7 @@ if not LINUX:
   var_cache_size = var_size*variables
   flash_needed = var_cache_size + 4 # for magic number
   flash_page_size = 1024 # just a geuss
+  if board.chip["family"]=="STM32F0": flash_page_size = 64*1024
   if board.chip["family"]=="STM32F1": flash_page_size = 1024 if "subfamily" in board.chip and board.chip["subfamily"]=="MD" else 2048
   if board.chip["family"]=="STM32F2": flash_page_size = 128*1024
   if board.chip["family"]=="STM32F3": flash_page_size = 2*1024
