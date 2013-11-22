@@ -510,7 +510,6 @@ STM32=1
 INCLUDE += -I$(ROOT)/targetlibs/stm32f0 -I$(ROOT)/targetlibs/stm32f0/lib
 DEFINES += -DSTM32F0
 SOURCES +=                              \
-targetlibs/stm32f0/lib/misc.c              \
 targetlibs/stm32f0/lib/stm32f0xx_adc.c     \
 targetlibs/stm32f0/lib/stm32f0xx_cec.c     \
 targetlibs/stm32f0/lib/stm32f0xx_comp.c    \
