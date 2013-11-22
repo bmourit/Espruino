@@ -19,6 +19,7 @@
 # HYSTM32_24=1            # HY STM32 2.4 Ebay boards
 # HYSTM32_28=1            # HY STM32 2.8 Ebay boards
 # HYSTM32_32=1            # HY STM32 3.2 VCT6 Ebay boards
+# STM32F0DISCOVERY=1
 # STM32VLDISCOVERY=1
 # STM32F3DISCOVERY=1
 # STM32F4DISCOVERY=1
@@ -239,6 +240,14 @@ BOARD=STM32VLDISCOVERY
 STLIB=STM32F10X_MD_VL
 PRECOMPILED_OBJS+=$(ROOT)/targetlibs/stm32f1/lib/startup_stm32f10x_md_vl.o
 OPTIMIZEFLAGS+=-Os # short on program memory
+else ifdef STM32F0DISCOVERY
+PROJ_NAME=espruino_stm32f0discovery
+FAMILY=STM32F0
+CHIP=STM32F051R8
+BOARD=STM32F0DISCOVERY
+STLIB=STM32F0XX
+PRECOMPILED_OBJS+=$(ROOT)/targetlibs/stm32f0/lib/startup_stm32f0xx.o
+OPTIMIZEFLAGS+=-Os # for memory reasons
 else ifdef TINYCHIP
 PROJ_NAME=espruino_stm32f103tbu
 FAMILY=STM32F1
@@ -493,6 +502,39 @@ endif
 ifdef USB
 DEFINES += -DUSB
 endif
+
+ifeq ($(FAMILY), STM32F0)
+ARCHFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m0  -mfix-cortex-m3-ldrd  -mthumb-interwork -mfloat-abi=soft
+ARM=1
+STM32=1
+INCLUDE += -I$(ROOT)/targetlibs/stm32f0 -I$(ROOT)/targetlibs/stm32f0/lib
+DEFINES += -DSTM32F0
+SOURCES +=                              \
+targetlibs/stm32f0/lib/misc.c              \
+targetlibs/stm32f0/lib/stm32f0xx_adc.c     \
+targetlibs/stm32f0/lib/stm32f0xx_cec.c     \
+targetlibs/stm32f0/lib/stm32f0xx_comp.c    \
+targetlibs/stm32f0/lib/stm32f0xx_crc.c     \
+targetlibs/stm32f0/lib/stm32f0xx_dac.c     \
+targetlibs/stm32f0/lib/stm32f0xx_dbgmcu.c  \
+targetlibs/stm32f0/lib/stm32f0xx_dma.c     \
+targetlibs/stm32f0/lib/stm32f0xx_exti.c    \
+targetlibs/stm32f0/lib/stm32f0xx_flash.c   \
+targetlibs/stm32f0/lib/stm32f0xx_gpio.c    \
+targetlibs/stm32f0/lib/stm32f0xx_i2c.c     \
+targetlibs/stm32f0/lib/stm32f0xx_it.c      \
+targetlibs/stm32f0/lib/stm32f0xx_iwdg.c    \
+targetlibs/stm32f0/lib/stm32f0xx_misc.c    \
+targetlibs/stm32f0/lib/stm32f0xx_pwr.c     \
+targetlibs/stm32f0/lib/stm32f0xx_rcc.c     \
+targetlibs/stm32f0/lib/stm32f0xx_rtc.c     \
+targetlibs/stm32f0/lib/stm32f0xx_spi.c     \
+targetlibs/stm32f0/lib/stm32f0xx_syscfg.c  \
+targetlibs/stm32f0/lib/stm32f0xx_tim.c     \
+targetlibs/stm32f0/lib/stm32f0xx_usart.c   \
+targetlibs/stm32f0/lib/stm32f0xx_wwdg.c    \
+targetlibs/stm32f0/lib/system_stm32f0xx.c
+endif #STM32F0
 
 ifeq ($(FAMILY), STM32F1)
 ARCHFLAGS += -mlittle-endian -mthumb -mcpu=cortex-m3  -mfix-cortex-m3-ldrd  -mthumb-interwork -mfloat-abi=soft

@@ -83,7 +83,16 @@ unsigned long long jshPinStateIsManual = 0;
 #define GPIO_AF_SPI2 GPIO_AF_5
 #endif
 
-
+#if define(STM32F0)
+// more renaming
+#define EXTI2_IRQn EXTI2_TS_IRQn
+#define GPIO_Mode_AIN GPIO_Mode_AN
+// from device _gpio.h
+#define GPIO_AF_USART1 GPIO_AF_0 // FIXME AF_1 can be set as both USART1 and USART2 if AF_0 is not set
+#define GPIO_AF_USART2 GPIO_AF_1 // or as USART2 alone, only if USART1 is assigned to AF_0
+#define GPIO_AF_SPI1 GPIO_AF_0 
+#define GPIO_AF_SPI2 GPIO_AF_0
+#endif
 
 uint8_t pinToEVEXTI(Pin ipin) {
   JsvPinInfoPin pin = pinInfo[ipin].pin;
@@ -254,7 +263,7 @@ static inline uint8_t stmADCChannel(Pin pin) {
 
 #ifdef STM32API2
 static inline uint8_t functionToAF(JshPinFunction func) {
-#if defined(STM32F4) || defined(STM32F2)
+#if defined(STM32F4) || defined(STM32F2) || defined(STM32F0)
   switch (func & JSH_MASK_TYPE) {
   case JSH_SPI1    : return GPIO_AF_SPI1;
   case JSH_SPI2    : return GPIO_AF_SPI2;
@@ -534,7 +543,7 @@ static inline void jshPinSetFunction(Pin pin, JshPinFunction func) {
   } else
     jshPinSetState(pin, JSHPINSTATE_AF_OUT);
   // now 'connect' the pin up
-#if defined(STM32F2) || defined(STM32F3) || defined(STM32F4)
+#if defined(STM32F0) || defined(STM32F2) || defined(STM32F3) || defined(STM32F4)
   GPIO_PinAFConfig(stmPort(pin), stmPinSource(pin), functionToAF(func));
 #else
   bool remap = (func&JSH_MASK_AF)!=JSH_AF0;
@@ -585,6 +594,14 @@ void jshInit() {
                          RCC_AHBPeriph_GPIOC |
                          RCC_AHBPeriph_GPIOD |
                          RCC_AHBPeriph_GPIOE |
+                         RCC_AHBPeriph_GPIOF, ENABLE);
+  #elif defined(STM32F0)
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_PWR, ENABLE);
+  RCC_AHBPeriphClockCmd( RCC_AHBPeriph_ADC1 |
+                         RCC_AHBPeriph_GPIOA |
+                         RCC_AHBPeriph_GPIOB |
+                         RCC_AHBPeriph_GPIOC |
+                         RCC_AHBPeriph_GPIOD |
                          RCC_AHBPeriph_GPIOF, ENABLE);
  #elif defined(STM32F2) || defined(STM32F4) 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
